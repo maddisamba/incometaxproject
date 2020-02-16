@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+	<script src="html2canvas.min.js" ></script>
+	<script src="/node_modules/angular/angular.js"></script>
+	<script type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script  src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script >
+
+
+var app1=angular.module("my-app",[]);
+      app1.controller("addcontrol",function($scope){
+        $scope.te=[];
+        $scope.tep=[];
+        $scope.addinput=function(){
+            $scope.te.push({'amts':" "});
+        };
+        $scope.removeIn=function(input){
+          var index = $scope.te.indexOf(input);
+          $scope.te.splice(index, 1);
+        };
+        $scope.getTotal = function(){
+    var total = 0;
+    for(var i = 0; i < $scope.te.length; i++){
+        var product = $scope.te[i];
+        total +=Number( product.amts || 0);
+    }
+    return total;
+    }
+    $scope.addinputs=function(){
+            $scope.tep.push({'amts':" "});
+        };
+        $scope.removeIns=function(input){
+          var index = $scope.tep.indexOf(input);
+          $scope.tep.splice(index, 1);
+        };
+        $scope.getTotals = function(){
+    var totals = 0;
+    for(var i = 0; i < $scope.tep.length; i++){
+        var products = $scope.tep[i];
+        totals +=Number( products.amts || 0);
+    }
+    return totals;
+    }
+
+
+    
+
+
+
+
+    
+       $scope.getSal=function(){
+         var a=Number($scope.pay || 0);
+         var b=Number($scope.dpay || 0);
+         var c=Number($scope.da || 0);
+         var d=Number($scope.hra || 0);
+         var e=Number($scope.oa || 0);
+         var sum=a+b+c+d+e;
+         return sum;
+       }
+
+       $scope.getBal=function()
+       {
+         var b1=Number($scope.lh || 0);
+         var b2=Number($scope.pt || 0);
+         var b3=Number(50000);
+        var balan=($scope.getSal()-b1)-(b3+b2);
+        if(balan <0)
+        {
+          return 0;
+        }
+        else{
+        return balan;}
+       }
+       $scope.getBal2=function()
+       {
+         var a=Number($scope.oin || 0);
+         var b=Number($scope.hloan || 0);
+         if(b>=200000){
+           b=200000;
+          return $scope.getBal()+a-b;
+         }
+         else
+         {
+          return $scope.getBal()+a-b;
+         }
+         
+       }
+
+       $scope.getTot=function()
+       {
+         var gt1=Number($scope.pf || 0);
+         var gt2=Number($scope.gi || 0);
+         var gt3=Number($scope.lps || 0);
+         var gt4=Number($scope.ppf || 0);
+         var gt5=Number($scope.emp1 || 0);
+         var gt7=Number($scope.hbl || 0);
+         var gt8=Number($scope.tcn || 0);
+         var gt9=Number($scope.ccc || 0);
+         var gt10=Number($scope.ccd || 0);
+         var alt=gt1+gt2+gt3+gt4+gt5+gt7+gt8+gt9+gt10+$scope.getTotal()+$scope.getTotals();
+          if(alt > 150000)
+          {
+            return 150000;
+          }
+          else
+          {
+            return alt;
+          }
+        }
+        $scope.getTot2=function()
+        {
+          var gtt1=Number($scope.ba1 || 0);
+          var gtt2=Number($scope.ba2 || 0);
+          var gtt3=Number($scope.ba3 || 0);
+          var gtt4=Number($scope.ba4 || 0);
+          var gtt41=Number($scope.ba41 || 0);
+          var gtt5=Number($scope.ba5 || 0);
+          var bal1=Number($scope.getBal2() || 0);
+          var bal12=(bal1/100)*10;
+          if($scope.age>60)
+          {
+            if(gtt1>50000)
+            {
+              gtt1=50000;
+            }
+          }
+          else
+          {
+            if(gtt1>25000)
+            {
+              gtt1=25000;
+            }
+          }
+          if(gtt2>50000)
+          {
+            gtt2=50000;
+          }
+          
+          if(gtt4>=bal12)
+          {
+            gtt4=bal12;
+          }
+          if(gtt41>=bal12)
+          {
+            gtt41=bal12/2;
+          }
+          else
+          {
+            gtt41=gtt41/2;
+          }
+          if($scope.sdisable == "sd"){
+          if(gtt5>125000)
+          {
+            gtt5=125000;
+          }}
+          else if($scope.sdisable == "gd"){
+          if(gtt5>75000)
+          {
+            gtt5=75000;
+          }}
+          else{
+              gtt5=0;
+          }
+          
+          return gtt1+gtt2+gtt3+gtt4+gtt41+gtt5;
+        }
+        
+        $scope.getHra=function()
+        {
+          var hr1=Number($scope.pay || 0);
+          var hr2=Number($scope.dpay || 0);
+          var hr3=Number($scope.da || 0);
+          var hr4=Number($scope.mr || 0);
+          var hrai=hr1+hr2+hr3;
+          if((hr4*12)<(hrai/100)*10)
+          {
+             $scope.lh=hr4*12;
+          }
+          else{
+            $scope.lh=(hrai/100)*10;
+          }
+          
+          return (hrai/100)*10;
+        }
+        $scope.getHra2=function()
+        {
+          var hrac=Number($scope.mr || 0);
+          return hrac*12;
+        }
+
+         $scope.getTotalInc=function()
+         {  var inc=$scope.netIncome();
+           if($scope.age<=60)
+           {
+              if(inc<=250000)
+              {
+                return 0;
+              }
+              else if(inc>250000 && inc<=500000)
+              {
+                return 0;
+              }
+              else if(inc>500000 && inc<=1000000)
+              {
+                return (((inc-500000)/100)*20)+12500;
+              }
+              else if(inc>1000000)
+              {
+                return (((inc-1000000)/100)*30)+112500;
+              }
+           }
+           else
+           {
+            if(inc<=300000)
+              {
+                return 0;
+              }
+              else if(inc>300000 && inc<=500000)
+              {
+                return ((inc-300000)/100)*5;
+              }
+              else if(inc>500000 && inc<=1000000)
+              {
+                return (((inc-500000)/100)*20)+15000;
+              }
+              else if(inc>1000000)
+              {
+                return (((inc-1000000)/100)*30)+115000;
+              }
+           }
+         } 
+
+         $scope.eduTax=function()
+         {
+           var edutax= ($scope.getTotalInc()/100)*4;
+            return edutax;
+         }
+
+         $scope.netIncome=function()
+         {
+           var ni1=Number($scope.oin || 0)
+           var name1=$scope.getBal()+ni1-$scope.getTot()-$scope.getTot2();
+           return name1;
+
+         }
+         $scope.hides=function()
+         {
+           if($scope.sdisable == "nd")
+           {
+              dish.hidden="true";
+           }
+           
+         };
+         $scope.exportPDF = function(){
+			  		var doc = new jsPDF("p","cm","a3");
+			  		html2canvas(document.getElementById('incomes1'), {
+			  			onrendered: function (canvas){
+			  				var img = canvas.toDataURL();
+			  				doc.setFontSize(20);
+			  				doc.addImage(img, 'png', 5, 10);
+                
+			  			}
+			  		});
+			  		html2canvas(document.getElementById('incf2'), {
+			  			onrendered: function (canvas){
+			  				var img = canvas.toDataURL();
+			  				doc.setFontSize(20);
+			  				doc.addImage(img, 'png', 5, 20);
+                doc.addPage();
+			  			}
+			  		});
+			  		html2canvas(document.getElementById('incf3'), {
+			  			onrendered: function (canvas){
+			  				var img = canvas.toDataURL();
+			  				doc.setFontSize(20);
+			  				doc.addImage(img, 'png', 5, 10);
+			  				
+			  			}
+			  		});
+			  		html2canvas(document.getElementById('incf4'), {
+			  			onrendered: function (canvas){
+			  				var img = canvas.toDataURL();
+			  				doc.setFontSize(20);
+			  				doc.addImage(img, 'png', 5, 30);
+                doc.save('income.pdf');
+                
+			  			}
+			  		});
+			  	
+pdfMake.createPdf(doc).download("Incometaxdetails.pdf");
+				}
+
+         $scope.createPdf = function () {
+
+html2canvas(document.getElementById('incomes1'), {
+    onrendered: function (canvas) {
+        var data = canvas.toDataURL();
+        var docDefinition = {
+            content: [{
+                image: data,
+                width: 400,
+            }]
+        };
+        
+pdfMake.createPdf(docDefinition).download("IncometaxDetails.pdf");
+    }
+}); 
+
+
+}
+
+
+      });
+      
+    </script>
+ 
+  
+  <body ng-app="my-app"  ng-controller="addcontrol" style="background:aquamarine; font-family:Arial;margin-left: 300px; " id="incomes" ><b>
+    <form id="incf" name="incform" style="background:lightgreen;padding-left:100px  ; width:1000px;" > 
+      <div id="incomes1">
+        <center><h1><u>INCOME-TAX FORM</u></h1></center><br />
+        <table>
+        <tr>
+      <td>Enter Name:</td><td> <input type="text" ng-model="na" /></td></tr>
+      <tr><td>Enter Age:</td><td> <input type="text" ng-model="age" /></td></tr>
+      <tr><td>Designation:</td><td><select ng-model="desig" >
+          <option value="Principal">Principal</option>
+          <option value="HOD">HOD</option>
+          <option value="Professor">Professor</option>
+          <option value="Asst.Professor">Asst.Professor</option>
+        </select>
+      </td></tr>
+      <tr><td>Pan card Number:</td> <td><input type="text" name="pannum" ng-model="pan" ng-pattern="/^[0-9a-zA-Z]{10}$/" />
+        <span  ng-show="incform.pannum.$error.pattern">Enter correct pan number</span></td></tr>
+      
+      <tr><td>Place of working:</td><td><input type="text" ng-model="place" /></td></tr>
+    </table>
+      </div>
+      <div id="incf2">
+      <table>
+  <tr><th><h2>Estimated Pay:</h2></th></tr>
+      <tr><td>a)Enter Your Pay (in Rs.):</td><td><input  ng-model="pay"   type="text"  /></td></tr>
+      <tr><td>b)Enter Your Dearness Pay (in Rs.):</td><td><input  ng-model="dpay" type="text" /></td></tr>
+      <tr><td>c)Enter Your D.A.(in Rs.):</td><td><input  ng-model="da" type="text" /></td></tr>
+      <tr><td>d)Enter Your H.R.A(in Rs.):</td><td><input ng-model="hra" type="text"  /></td></tr>
+      <tr><td>e)Enter Other allowances(in Rs.):</td><td><input  ng-model="oa" type="text" /></td></tr>
+      <tr><td><h2>Total Gross Salary(in Rs.):</h2></td><td><h2>{{ getSal() }}</h2></td></tr>
+       </table>
+       <table>
+      <tr><td><u>Less:</u>H.R.A. rebate under section 10(13A)(in Rs.):</td><td><input type="text" ng-model="lh" readonly="true"></td></tr>
+      <tr><td>Balance Salary(in Rs.):</td><td><span ng-bind="getSal()-lh"></span></td></tr>
+      <tr><td><u>Less:</u>Standard Deductions U/S 16(1a)(in Rs.):</td><td>50,000</td></tr>
+      <tr><td><u>Less:</u>Professional Tax(in Rs.):</td><td><input type="text" ng-model="pt" /></td></tr>
+      <tr><td>Balance Salary(in Rs.):</td><td><span ng-bind="getBal()" ></span></td></tr>
+      <tr><td><u>Add:</u>Any other income reported by the employee(in Rs.):</td><td><input type="text" ng-model="oin" /></td></tr>
+      <tr><td><u>Less:</u>HBA interest U/S 24(1)(in Rs.):</td><td><input type="text" ng-model="hloan" /></td></tr>
+      <tr><td><h2>Gross Total income(in Rs.):</td><td>{{getBal2()}}</h2></td></tr>
+       </table>
+      </div>
+      <div id="incf3">
+      <u>Deduction Under Chapter VI-A:</u>
+      <p>(A) Sections 80C,80CCC and 80CCD</p>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(a)Section 80C</p>
+      
+        <table>
+        <tr><th></th></tr>
+      <tr><td>(i)P.F. (in Rs.):</td><td><input type="text" ng-model="pf" /></td></tr>
+      <tr><td>(ii)G.I. (in Rs.):</td><td><input type="text" ng-model="gi" /></td></tr>
+      <tr><td>(iii)L.I.C:-S.S.S---:</td><td><button  ng-click="addinput()" >ADD</button>
+                                <div ng-repeat="input in te">
+                                  <p>
+                                      Policy No:<input type="text" ng-model="input.policy" />
+                                      Rs:<input type="text" ng-model="input.amts" />
+                                             
+                                      <button ng-click="removeIn(input)">Remove</button></p>
+                                </div>
+      </p></td></tr>
+      <tr><td>Personal---(in Rs.):</td><td><button  ng-click="addinputs()" >ADD</button>
+        <div ng-repeat="input in tep">
+          <p>
+              Policy No:<input type="text" ng-model="input.policyp" />
+              Rs:<input type="text" ng-model="input.amts" />
+                     
+              <button ng-click="removeIns(input)">Remove</button></p>
+        </div></td></tr>
+      <tr><td>(iv)P.P.F. (in Rs.):</td><td><input type="text" ng-model="ppf" /></td></tr>
+      <tr><td>(v)Others  (in Rs.):</td><td><input type="text" ng-model="emp1" /></td></tr>
+      <tr><td>(vii)Repayment of H.B.L.  (in Rs.):</td><td><input type="text" ng-model="hbl" /></td></tr>
+      <tr><td>(viii)Tution fees for two(2) children (in Rs.):</td><td><input type="text" ng-model="tcn" /></td></tr>
+      <tr><td>b)Section 80 CCC   (in Rs.):</td><td><input type="text"  ng-model="ccc" /></td></tr>
+      <tr><td>b)Section 80 CCD   (in Rs.):</td><td><input type="text" ng-model="ccd" /></td></tr>
+      <tr><td>Total (in Rs.):</td><td>{{ getTot() }}</td></tr>
+        </table>
+        <table>
+      <tr><td><h3>(B)Other Sections80D,80DD,8OE,80G,80UUNDER CHAPTER VIA:</h3></td></tr>
+      <tr><td>Section 80D (in Rs.):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (in Rs.):<input type="text" ng-model="ba1"/></td> </tr>
+      <tr><td>Section 80DD(in Rs.):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (in Rs.):<input type="text" ng-model="ba2"/></td> </tr>
+      <tr><td>Section 80E (in Rs.):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (in Rs.):<input type="text" ng-model="ba3"/></td> </tr>
+      <tr><td>Section 80G </td> </tr>
+      <tr><td>A)National Defence Fund(Prime minister/Chief Minister Relief Fund ) (in Rs.)<input type="text" ng-model="ba4"/></td></tr>
+      <tr><td>B)Other Specified Charitable Trust &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in Rs.)<input type="text" ng-model="ba41"/></td></tr>
+      <tr><td>Are you a person with a disability?  <input type="radio" ng-model="sdisable" value="gd"/>General disability <input type="radio" ng-model="sdisable" value="sd"/>Severe disability  <input type="radio" ng-model="sdisable" value="nd" onchange="hides()"/>No</td></tr>
+      <tr><td  >Section 80U(in Rs.):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (in Rs.):<input type="text" ng-model="ba5" /></td> </tr>
+      <tr><td></td><td></td></tr>
+       <tr><td>Total (in Rs.):</td><td>{{ getTot2() }}</td></tr>
+      <tr><td>Net Taxable Income (in Rs.):</td><td> {{netIncome()}}</td></tr>
+     <tr><td>Tax on Total Income (in Rs.):</td><td>{{ getTotalInc() }}</td></tr>
+     <tr><td><u>Add:</u>4%Educational cess (in Rs.):</td><td>{{eduTax()}}</td></tr>
+     <tr><td>TOTAL TAX & Addnl. SURCHARGE PAYABLE (in Rs.):</td><td>{{ getTotalInc()+eduTax() }}</td></tr>
+    </table>
+  </div>
+  <div id="incf4">
+    <h3><u>Calculation of H.R.A.:</u></h3>
+    <table>
+    <tr><td>Actual amount of such allowance received in respect of relevant period (in Rs.):</td><td><input type="text" ng-model="mr" /></td><td>*12=RS:{{ getHra2()}}</td></tr>
+    <tr><td>Actual expenditure incurred in payment of rent in excess of 10%of salary (in Rs.):</td><td></td><td>Rs:{{ getHra() }}</td></tr>
+</table>
+  </div>
+  
+  <center> <input type="button" ng-click="exportPDF()" value="Print"/></center>
+    </form>
+  </b>
+  </body>
+</html>
